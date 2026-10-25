@@ -6,7 +6,7 @@ Reading Comments adds passage comments to Obsidian’s **Reading view**. Select 
 
 [Download the latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
 
-![A note in Obsidian Reading view with highlighted passages, comment markers, and Open and Resolved review cards](docs/screenshots/reading-view.png)
+![A note in Obsidian Reading view with highlighted passages, comment markers, and Open and Resolved review cards](docs/screenshots/reading-view.jpg)
 
 ## What you can do
 
@@ -43,7 +43,7 @@ The comments sidebar opens after saving. Open it again with the message icon in 
 <details>
 <summary>See the comment composer</summary>
 
-![The Add comment composer showing the selected passage and a draft review comment](docs/screenshots/add-comment.png)
+![The Add comment composer showing the selected passage and a draft review comment](docs/screenshots/add-comment.jpg)
 
 </details>
 
