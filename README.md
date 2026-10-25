@@ -18,7 +18,7 @@ You have a draft, proposal, plan, or other document you want to improve. You wan
 
 For example, highlight “The next release ships soon,” comment “Replace ‘soon’ with 30 October,” and hand the review to your AI agent. The agent updates that sentence and marks the comment resolved.
 
-![Reading view with open and resolved passage highlights and the comments panel closed](docs/screenshots/reading-view.jpg)
+![Reading view with open and resolved passage highlights and the comments panel closed](docs/screenshots/reading-view-panel-closed-v013.jpg)
 
 **Desktop only.** Comments are created in Reading view. Live Preview, source mode, and mobile are outside this release.
 
@@ -55,7 +55,7 @@ Saving leaves the comments panel as it is: closed stays closed, and an open pane
 <details>
 <summary>See the comment popup</summary>
 
-![A compact popup beside the selected passage, with the draft comment field focused](docs/screenshots/add-comment.jpg)
+![A compact popup beside the selected passage, with the draft comment field focused](docs/screenshots/inline-comment-popup-v013.jpg)
 
 </details>
 
