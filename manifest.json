@@ -1,7 +1,7 @@
 {
-  "id": "reading-comments",
-  "name": "Reading Comments",
-  "version": "0.1.3",
+  "id": "note-review-comments",
+  "name": "Note Review Comments",
+  "version": "0.1.4",
   "minAppVersion": "1.8.0",
   "description": "Comment on passages in Reading view and track AI review resolution.",
   "author": "Nikita Derevskov",

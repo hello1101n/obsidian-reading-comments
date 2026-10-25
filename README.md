@@ -1,4 +1,4 @@
-# Reading Comments for Obsidian
+# Note Review Comments for Obsidian
 
 Leave comments while reading in Obsidian, then ask Claude or another LLM to edit the document using your feedback.
 
@@ -19,22 +19,24 @@ Processed comments are marked **Resolved**, even if an attempt fails. Reopen the
 This plugin is installed manually; it is not listed in Obsidian’s community plugin directory. **You do not need Node.js or a build tool to install the release.**
 
 1. Download the plugin ZIP from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
-2. Extract it. The resulting `reading-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
+2. Extract it. The resulting `note-review-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
-4. Copy the extracted `reading-comments` folder into `plugins`. The final layout should be:
+4. Copy the extracted `note-review-comments` folder into `plugins`. The final layout should be:
 
    ```text
-   <your-vault>/.obsidian/plugins/reading-comments/
+   <your-vault>/.obsidian/plugins/note-review-comments/
    ├── main.js
    ├── manifest.json
    └── styles.css
    ```
 
-5. Return to **Settings → Community plugins**, click **Reload plugins**, and enable **Reading Comments**. Restart Obsidian if it does not appear.
+5. Return to **Settings → Community plugins**, click **Reload plugins**, and enable **Note Review Comments**. Restart Obsidian if it does not appear.
 6. Open a Markdown document and switch to **Reading view** using the view toggle in the note header.
 7. Highlight some text. A small comment popup opens beside the passage with its text field focused; start typing.
 
 Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been tested in Obsidian **1.14.5 on macOS**.
+
+If upgrading from a manual installation of Reading Comments 0.1.3 or earlier, disable and remove its `reading-comments` plugin folder before installing this version. Keep the vault’s `.comments` folder: existing reviews remain compatible.
 
 ## Add your first comment
 
@@ -42,7 +44,7 @@ Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been test
 2. Write your feedback, then choose **Save** or press **Cmd+Enter** / **Ctrl+Enter**.
 3. Use **Escape**, **Cancel**, or a click outside the popup to cancel a draft.
 
-Saving leaves the comments panel as it is: closed stays closed, and an open panel updates in place. Open it when you want using a comment marker, the message icon in the ribbon, or the **Reading Comments: Open reading comments** command.
+Saving leaves the comments panel as it is: closed stays closed, and an open panel updates in place. Open it when you want using a comment marker, the message icon in the ribbon, or the **Note Review Comments: Open reading comments** command.
 
 
 
@@ -115,13 +117,13 @@ npm test
 npm run build
 ```
 
-The installable plugin files are written to `dist/reading-comments/`.
+The installable plugin files are written to `dist/note-review-comments/`.
 
 The test suite covers DOM selections, status persistence, storage conflicts, malformed JSON, renames, and refresh races. A simulated Obsidian host uses real temporary files. The core workflow has also been checked in the native app; see [verification coverage](docs/verification.md).
 
 ## Uninstall
 
-Disable **Reading Comments** and remove `<your-vault>/.obsidian/plugins/reading-comments`. Your notes remain ordinary Markdown. Keep `.comments` to retain your review history.
+Disable **Note Review Comments** and remove `<your-vault>/.obsidian/plugins/note-review-comments`. Your notes remain ordinary Markdown. Keep `.comments` to retain your review history.
 
 ## License
 

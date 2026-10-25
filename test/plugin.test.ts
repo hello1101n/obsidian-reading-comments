@@ -145,12 +145,12 @@ test('the focused popup isolates Reading view keyboard shortcuts and restores th
 for(const initiallyOpen of [false,true])test(`saving a comment preserves sidebar state (${initiallyOpen?'open':'closed'})`,async t=>{
  const {plugin,win,root,app}=await host(t);
  if(initiallyOpen)await plugin.openSidebar();
- const leaves=app.workspace.getLeavesOfType('reading-comments-sidebar');const reveals=app.workspace.revealCount;
+ const leaves=app.workspace.getLeavesOfType('note-review-comments-sidebar');const reveals=app.workspace.revealCount;
  const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
  const input=win.document.querySelector('.rc-popup textarea');input.value='Keep the panel as it is';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
  for(let i=0;i<50 && plugin.composer;i++)await new Promise(resolve=>setTimeout(resolve,10));
  assert.equal(plugin.composer,null);assert.equal((await plugin.store.load('Review sample.md')).file.comments.length,1);
- assert.deepEqual(app.workspace.getLeavesOfType('reading-comments-sidebar'),leaves);assert.equal(app.workspace.revealCount,reveals);
+ assert.deepEqual(app.workspace.getLeavesOfType('note-review-comments-sidebar'),leaves);assert.equal(app.workspace.revealCount,reveals);
  assert.ok(root.querySelector('.rc-marker'));
  if(initiallyOpen)assert.match(win.document.querySelector('.rc-sidebar').textContent,/Keep the panel as it is/);
 });

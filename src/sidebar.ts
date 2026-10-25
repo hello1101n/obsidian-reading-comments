@@ -1,6 +1,6 @@
 import {ItemView, WorkspaceLeaf} from 'obsidian';
 import type {ReviewComment} from './comments.ts';
-export const SIDEBAR='reading-comments-sidebar';
+export const SIDEBAR='note-review-comments-sidebar';
 export interface SidebarModel {source:string;comments:ReviewComment[];matches:Map<string,string>;error?:string}
 export interface SidebarActions {copy:()=>void;refresh:()=>void;jump:(id:string)=>void;edit:(id:string,anchor:HTMLElement)=>void;toggle:(id:string)=>void;remove:(id:string)=>void}
 export class CommentsSidebar extends ItemView {
