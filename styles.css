@@ -1,0 +1,19 @@
+::highlight(rc-open) { background-color: rgba(255, 194, 61, .3); }
+::highlight(rc-resolved) { background-color: rgba(87, 168, 112, .15); }
+.rc-add-comment { position: fixed; z-index: 1000; box-shadow: var(--shadow-s); }
+.rc-add-comment[hidden] { display: none; }
+.rc-marker { display: inline-flex; margin-inline-start: .35em; padding: 0 .3em; height: 1.5em; font-size: .8em; vertical-align: middle; }
+.rc-marker.is-resolved { color: var(--text-muted); opacity: .65; }
+.rc-sidebar { padding: 16px; }
+.rc-source { color: var(--text-muted); overflow-wrap: anywhere; font-size: var(--font-smaller); }
+.rc-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-block: 10px; }
+.rc-card { border: 1px solid var(--background-modifier-border); border-radius: 8px; padding: 12px; margin-block: 12px; }
+.rc-card.is-resolved { border-style: dashed; }
+.rc-card blockquote { border-inline-start: 3px solid var(--interactive-accent); padding-inline-start: 10px; margin: 10px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.rc-status { font-size: var(--font-smaller); font-weight: 600; color: var(--text-accent); }
+.rc-card.is-resolved .rc-status { color: var(--text-muted); }
+.rc-comment-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.rc-warning, .rc-error { color: var(--text-warning); }
+.rc-help { color: var(--text-muted); }
+.rc-focused { outline: 2px solid var(--interactive-accent); }
+.rc-composer { width: 100%; min-height: 130px; resize: vertical; }

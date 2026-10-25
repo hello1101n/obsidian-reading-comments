@@ -1,0 +1,10 @@
+{
+  "id": "reading-comments",
+  "name": "Reading Comments",
+  "version": "0.1.0",
+  "minAppVersion": "1.8.0",
+  "description": "Comment on passages in Reading view and track AI review resolution.",
+  "author": "Nikita Derevskov",
+  "isDesktopOnly": true,
+  "authorUrl": "https://github.com/hello1101n"
+}
