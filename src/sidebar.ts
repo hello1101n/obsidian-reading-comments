@@ -2,7 +2,7 @@ import {ItemView, WorkspaceLeaf} from 'obsidian';
 import type {ReviewComment} from './comments.ts';
 export const SIDEBAR='reading-comments-sidebar';
 export interface SidebarModel {source:string;comments:ReviewComment[];matches:Map<string,string>;error?:string}
-export interface SidebarActions {copy:()=>void;refresh:()=>void;jump:(id:string)=>void;edit:(id:string)=>void;toggle:(id:string)=>void;remove:(id:string)=>void}
+export interface SidebarActions {copy:()=>void;refresh:()=>void;jump:(id:string)=>void;edit:(id:string,anchor:HTMLElement)=>void;toggle:(id:string)=>void;remove:(id:string)=>void}
 export class CommentsSidebar extends ItemView {
  private actions:SidebarActions;
  constructor(leaf:WorkspaceLeaf,actions:SidebarActions){super(leaf);this.actions=actions;}
@@ -29,7 +29,7 @@ export class CommentsSidebar extends ItemView {
    const actions=card.createDiv({cls:'rc-actions'});
    const jump=actions.createEl('button',{text:'Show passage'});jump.disabled=match!=='found';jump.onclick=()=>this.actions.jump(comment.id);
    actions.createEl('button',{text:comment.resolved?'Reopen':'Resolve'}).onclick=()=>this.actions.toggle(comment.id);
-   actions.createEl('button',{text:'Edit'}).onclick=()=>this.actions.edit(comment.id);
+   const edit=actions.createEl('button',{text:'Edit'});edit.onclick=()=>this.actions.edit(comment.id,edit);
    actions.createEl('button',{text:'Delete'}).onclick=()=>this.actions.remove(comment.id);
   }
  }

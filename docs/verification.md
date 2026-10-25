@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-`npm test` passes 20 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
+`npm test` passes 28 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
 
 Independent review identified two refresh defects. Regression tests reproduced both, then passed after the fixes: annotations survive identical-text DOM rebuilds, and stale failed loads cannot overwrite newer state.
 
@@ -32,3 +32,7 @@ AI processing depends on the agent following the copied prompt. The plugin reads
 ## Automatic composer — v0.1.1
 
 Selecting a passage opens the composer directly. Regression tests cover saving without a button click, duplicate mouse releases, and cancelling without reopening from an unrelated click. Native Obsidian verification passed: selecting a list passage opened the composer without another click, Cmd+Enter saved the comment, and Escape cancelled a second selection without reopening it.
+
+## Anchored popup — v0.1.2
+
+The full-screen modal is replaced by a compact nonmodal popup beside the selected passage. Tests verify immediate textarea focus, viewport clamping and flipping, Escape and outside-click dismissal, duplicate prevention, saving, and cleanup. Native verification passed in Obsidian 1.14.5: highlighting a list passage opened the popup beside the quote, direct keyboard input entered the focused comment field without clicking, and Cmd+Enter saved the comment. Escape cancellation was also checked. The popup uses its own keyboard scope while open and restores it when closed.

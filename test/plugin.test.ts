@@ -14,7 +14,7 @@ async function host(t){
  const proto=win.HTMLElement.prototype;
  proto.createEl=function(tag,opts={}){const el=win.document.createElement(tag);if(typeof opts==='string')opts={cls:opts};if(opts.text)el.textContent=opts.text;if(opts.cls)el.className=opts.cls;for(const [k,v]of Object.entries(opts.attr??{}))el.setAttribute(k,v);this.append(el);return el;};
  proto.createDiv=function(opts={}){return this.createEl('div',opts);};proto.empty=function(){this.replaceChildren();};proto.setText=function(t){this.textContent=t;};proto.addClass=function(c){this.classList.add(c);};proto.removeClass=function(c){this.classList.remove(c);};proto.scrollIntoView=function(){};
- win.Range.prototype.getBoundingClientRect=()=>({left:50,bottom:100});
+ win.Range.prototype.getBoundingClientRect=()=>({left:50,right:260,top:80,bottom:100,width:210,height:20});
  const rootDir=await mkdtemp(join(tmpdir(),'rc-plugin-'));
  class Adapter {
   getBasePath(){return rootDir;}
@@ -28,12 +28,13 @@ async function host(t){
  class MarkdownView {file={path:'Review sample.md'};contentEl=win.document.querySelector('.workspace-leaf-content');containerEl=this.contentEl;getMode(){return 'preview';}}
  const markdown=new MarkdownView();const leaves=[{view:markdown}];const factories=new Map();const disposals=[];const notices=[];const clipboard={text:'',async writeText(s){this.text=s;}};
  const workspace={getLeavesOfType:type=>leaves.filter(l=>type==='markdown'?l.view instanceof MarkdownView:l.view.getViewType?.()===type),getActiveViewOfType:()=>markdown,on:()=>({}),onLayoutReady:f=>f(),async revealLeaf(){},getRightLeaf(){const leaf={async setViewState(state){this.view=factories.get(state.type)(this);}};leaves.push(leaf);return leaf;}};
- const app={vault:{adapter:new Adapter(),on:()=>({})},workspace};
+ const keymap={scopes:[],pushScope(scope){this.scopes.push(scope);},popScope(scope){this.scopes=this.scopes.filter(s=>s!==scope);}};
+ const app={keymap,vault:{adapter:new Adapter(),on:()=>({})},workspace};
  class Plugin {constructor(app){this.app=app;}register(f){disposals.push(f);}registerView(type,f){factories.set(type,f);}addRibbonIcon(){}addCommand(){}registerMarkdownPostProcessor(){}registerEvent(){}registerInterval(id){disposals.push(()=>win.clearInterval(id));}registerDomEvent(target,type,f){target.addEventListener(type,f);disposals.push(()=>target.removeEventListener(type,f));}}
  class ItemView {constructor(leaf){this.leaf=leaf;this.contentEl=win.document.body.createDiv();}}
  class Modal {constructor(){this.modalEl=win.document.body.createDiv({cls:'modal'});this.titleEl=this.modalEl.createEl('h2');this.contentEl=this.modalEl.createDiv();}open(){this.onOpen();}close(){this.onClose?.();this.modalEl.remove();}}
  const module={exports:{}};
- vm.runInNewContext(code,{module,exports:module.exports,require:()=>({Plugin,MarkdownView,ItemView,Modal,FileSystemAdapter:Adapter,Notice:class{constructor(s){notices.push(s);}}}),window:win,document:win.document,navigator:{clipboard},crypto,console});
+ vm.runInNewContext(code,{module,exports:module.exports,require:()=>({Plugin,MarkdownView,ItemView,Modal,Scope:class{},FileSystemAdapter:Adapter,Notice:class{constructor(s){notices.push(s);}}}),window:win,document:win.document,navigator:{clipboard},crypto,console});
  const plugin=new module.exports.default(app);await plugin.onload();await plugin.refresh();
  t.after(()=>{plugin.onunload();for(const f of disposals)f();dom.window.close();});
  return {plugin,dom,win,markdown,app,root:markdown.contentEl.querySelector('.markdown-preview-view'),rootDir,notices,clipboard};
@@ -45,7 +46,7 @@ test('Reading view selection opens composer, persists comment, resolves, reopens
  root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
  assert.ok(win.document.querySelector('textarea'), 'Highlighting opens the composer without a button click');
  assert.equal(win.document.querySelector('.rc-add-comment'),null);
- const input=win.document.querySelector('textarea');input.value='Use a date';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
+ const input=win.document.querySelector('textarea');assert.equal(win.document.activeElement,input,'Typing must go straight into the comment');assert.equal(win.document.querySelector('.modal'),null);input.value='Use a date';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
  let saved;for(let i=0;i<50;i++){try{saved=JSON.parse(await readFile(join(rootDir,'.comments/Review sample.md.comments.json'),'utf8'));break;}catch{await new Promise(r=>setTimeout(r,10));}}
  assert.equal(saved.comments[0].comment,'Use a date');assert.equal(saved.comments[0].resolved,false);
  await plugin.refresh();assert.ok(win.document.querySelector('.rc-marker'));
@@ -85,12 +86,58 @@ test('a selection opens one composer and unrelated mouse releases do not reopen 
  const {plugin,win,root}=await host(t);
  const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);
  win.document.body.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
- assert.equal(win.document.querySelectorAll('.modal').length,0);
+ assert.equal(win.document.querySelectorAll('.rc-popup').length,0);
  root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
  root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
- assert.equal(win.document.querySelectorAll('.modal').length,1);
- [...win.document.querySelectorAll('.modal button')].find(b=>b.textContent==='Cancel').click();
- assert.equal(win.document.querySelectorAll('.modal').length,0);
+ assert.equal(win.document.querySelectorAll('.rc-popup').length,1);
+ [...win.document.querySelectorAll('.rc-popup button')].find(b=>b.textContent==='Cancel').click();
+ assert.equal(win.document.querySelectorAll('.rc-popup').length,0);
  win.document.body.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
- assert.equal(win.document.querySelectorAll('.modal').length,0);
+ assert.equal(win.document.querySelectorAll('.rc-popup').length,0);
+});
+
+test('popup appears beside the selection, focuses typing immediately, and Escape cancels',async t=>{
+ const {plugin,win,root}=await host(t);
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);
+ root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ const popup=win.document.querySelector('.rc-popup');assert.ok(popup);assert.equal(popup.style.left,'50px');assert.equal(popup.style.top,'108px');
+ const input=popup.querySelector('textarea');assert.equal(win.document.activeElement,input);
+ assert.equal(popup.getAttribute('aria-modal'),'false');assert.equal(win.document.querySelector('.modal'),null);
+ input.value='Immediate typing';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+ assert.equal(win.document.querySelector('.rc-popup'),null);assert.equal(plugin.composer,null);
+});
+test('outside click closes popup and unload removes its listeners and UI',async t=>{
+ const {plugin,win,root}=await host(t);
+ const select=()=>{const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));};
+ select();win.document.body.dispatchEvent(new win.MouseEvent('pointerdown',{bubbles:true}));
+ assert.equal(win.document.querySelector('.rc-popup'),null);
+ select();assert.ok(win.document.querySelector('.rc-popup'));plugin.onunload();
+ assert.equal(win.document.querySelector('.rc-popup'),null);
+ win.document.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+ assert.equal(plugin.composer,null);
+});
+test('editing anchors the popup in the sidebar window rather than the note window',async t=>{
+ const {plugin,win}=await host(t);await plugin.store.add('Review sample.md',comment);await plugin.refresh();
+ const other=new JSDOM('<body><button>Edit</button></body>');t.after(()=>other.window.close());
+ for(const name of ['createEl','createDiv','empty','setText','addClass','removeClass'])other.window.HTMLElement.prototype[name]=win.HTMLElement.prototype[name];
+ const button=other.window.document.querySelector('button');plugin.edit('one',button);
+ assert.ok(other.window.document.querySelector('.rc-popup'));assert.equal(win.document.querySelector('.rc-popup'),null);
+ assert.equal(other.window.document.activeElement,other.window.document.querySelector('textarea'));
+});
+test('popup repositions when its content size changes and disconnects its observer on close',async t=>{
+ const {plugin,win,root}=await host(t);let resize,disconnected=false;
+ win.ResizeObserver=class{constructor(callback){resize=callback;}observe(){}disconnect(){disconnected=true;}};
+ Object.defineProperty(win,'innerHeight',{value:500,configurable:true});
+ win.Range.prototype.getBoundingClientRect=()=>({left:50,right:260,top:350,bottom:370,width:210,height:20});
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ const popup=win.document.querySelector('.rc-popup');assert.equal(popup.style.top,'92px');
+ popup.getBoundingClientRect=()=>({width:360,height:400});assert.equal(typeof resize,'function');resize();assert.equal(popup.style.top,'12px');
+ plugin.composer.close();assert.equal(disconnected,true);
+});
+
+test('the focused popup isolates Reading view keyboard shortcuts and restores their scope on close',async t=>{
+ const {plugin,win,root,app}=await host(t);
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ assert.equal(app.keymap.scopes.length,1);assert.equal(win.document.activeElement,win.document.querySelector('.rc-popup textarea'));
+ plugin.composer.close();assert.equal(app.keymap.scopes.length,0);
 });

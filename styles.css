@@ -14,4 +14,10 @@
 .rc-warning, .rc-error { color: var(--text-warning); }
 .rc-help { color: var(--text-muted); }
 .rc-focused { outline: 2px solid var(--interactive-accent); }
-.rc-composer { width: 100%; min-height: 130px; resize: vertical; }
+.rc-popup { position: fixed; z-index: 1000; width: min(360px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow-y: auto; box-sizing: border-box; padding: 14px; border: 1px solid var(--background-modifier-border); border-radius: 10px; background: var(--background-primary); box-shadow: var(--shadow-l); color: var(--text-normal); }
+.rc-popup-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.rc-popup-close { padding: 0 6px; font-size: 20px; background: transparent; box-shadow: none; }
+.rc-popup-quote { max-height: 66px; overflow-y: auto; margin: 8px 0 10px; padding-inline-start: 8px; border-inline-start: 2px solid var(--interactive-accent); color: var(--text-muted); font-size: var(--font-smaller); }
+.rc-popup .rc-actions { align-items: center; justify-content: flex-end; margin-bottom: 0; }
+.rc-popup-hint { margin-inline-end: auto; color: var(--text-muted); font-size: 11px; }
+.rc-composer { width: 100%; min-height: 82px; resize: vertical; box-sizing: border-box; }

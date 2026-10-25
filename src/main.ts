@@ -23,7 +23,7 @@ export default class ReadingComments extends Plugin {
   this.store=new ReviewStore(this.app.vault.adapter);
   this.registerView(SIDEBAR,leaf=>new CommentsSidebar(leaf,{
    copy:()=>this.run(()=>this.copyPrompt()),refresh:()=>this.schedule(),jump:id=>this.jump(id),
-   edit:id=>this.edit(id),toggle:id=>this.run(()=>this.toggle(id)),remove:id=>this.run(()=>this.remove(id)),
+   edit:(id,anchor)=>this.edit(id,anchor),toggle:id=>this.run(()=>this.toggle(id)),remove:id=>this.run(()=>this.remove(id)),
   }));
   this.addRibbonIcon('message-square','Open reading comments',()=>{void this.openSidebar();});
   this.addCommand({id:'open-comments',name:'Open reading comments',callback:()=>{void this.openSidebar();}});
@@ -67,7 +67,7 @@ export default class ReadingComments extends Plugin {
    if(view.file?.path!==source)throw new Error('The note changed or moved. Select the passage again.');
    await this.store.add(source,createComment(captured.quote,text,captured.line,captured.endLine,captured.anchor));
    doc.getSelection()?.removeAllRanges();await this.openSidebar();await this.refresh();
-  },()=>{doc.getSelection()?.removeAllRanges();this.composer=null;});
+  },()=>{doc.getSelection()?.removeAllRanges();this.composer=null;},{doc,anchor:()=>range.getBoundingClientRect()});
   this.composer=modal;modal.open();
  }
  private async refresh():Promise<void> {
@@ -127,9 +127,12 @@ export default class ReadingComments extends Plugin {
  }
  private async toggle(id:string):Promise<void>{const {comment,source,snapshot}=this.current(id);await this.store.update(source,snapshot.raw,f=>setResolved(f,id,!comment.resolved));await this.refresh();}
  private async remove(id:string):Promise<void>{const {source,snapshot}=this.current(id);await this.store.update(source,snapshot.raw,f=>({...f,comments:f.comments.filter(c=>c.id!==id)}));await this.refresh();}
- private edit(id:string):void {
+ private edit(id:string,anchor?:HTMLElement):void {
   if(this.composer)return;
-  this.run(async()=>{const {comment,source,snapshot}=this.current(id);const modal=new CommentComposer(this.app,comment.highlightedText,comment.comment,async text=>{await this.store.update(source,snapshot.raw,f=>changeComment(f,id,c=>({...c,comment:text})));await this.refresh();},()=>{this.composer=null;});this.composer=modal;modal.open();});
+  const doc=anchor?.ownerDocument??this.selected?.containerEl.ownerDocument??document;
+  const card=anchor??Array.from(doc.querySelectorAll<HTMLElement>('[data-comment-id]')).find(el=>el.dataset.commentId===id);
+  const placement={doc,anchor:()=>card?.getBoundingClientRect()??{left:doc.defaultView!.innerWidth-380,top:80,bottom:100}};
+  this.run(async()=>{const {comment,source,snapshot}=this.current(id);const modal=new CommentComposer(this.app,comment.highlightedText,comment.comment,async text=>{await this.store.update(source,snapshot.raw,f=>changeComment(f,id,c=>({...c,comment:text})));await this.refresh();},()=>{this.composer=null;},placement);this.composer=modal;modal.open();});
  }
  private jump(id:string):void {
   const root=this.selected?this.root(this.selected):null;const range=root?this.painted.get(root)?.ranges.get(id):null;
