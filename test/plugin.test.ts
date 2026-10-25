@@ -27,7 +27,7 @@ async function host(t){
  }
  class MarkdownView {file={path:'Review sample.md'};contentEl=win.document.querySelector('.workspace-leaf-content');containerEl=this.contentEl;getMode(){return 'preview';}}
  const markdown=new MarkdownView();const leaves=[{view:markdown}];const factories=new Map();const disposals=[];const notices=[];const clipboard={text:'',async writeText(s){this.text=s;}};
- const workspace={getLeavesOfType:type=>leaves.filter(l=>type==='markdown'?l.view instanceof MarkdownView:l.view.getViewType?.()===type),getActiveViewOfType:()=>markdown,on:()=>({}),onLayoutReady:f=>f(),async revealLeaf(){},getRightLeaf(){const leaf={async setViewState(state){this.view=factories.get(state.type)(this);}};leaves.push(leaf);return leaf;}};
+ const workspace={getLeavesOfType:type=>leaves.filter(l=>type==='markdown'?l.view instanceof MarkdownView:l.view.getViewType?.()===type),getActiveViewOfType:()=>markdown,on:()=>({}),onLayoutReady:f=>f(),revealCount:0,async revealLeaf(){this.revealCount++;},getRightLeaf(){const leaf={async setViewState(state){this.view=factories.get(state.type)(this);}};leaves.push(leaf);return leaf;}};
  const keymap={scopes:[],pushScope(scope){this.scopes.push(scope);},popScope(scope){this.scopes=this.scopes.filter(s=>s!==scope);}};
  const app={keymap,vault:{adapter:new Adapter(),on:()=>({})},workspace};
  class Plugin {constructor(app){this.app=app;}register(f){disposals.push(f);}registerView(type,f){factories.set(type,f);}addRibbonIcon(){}addCommand(){}registerMarkdownPostProcessor(){}registerEvent(){}registerInterval(id){disposals.push(()=>win.clearInterval(id));}registerDomEvent(target,type,f){target.addEventListener(type,f);disposals.push(()=>target.removeEventListener(type,f));}}
@@ -140,4 +140,17 @@ test('the focused popup isolates Reading view keyboard shortcuts and restores th
  const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
  assert.equal(app.keymap.scopes.length,1);assert.equal(win.document.activeElement,win.document.querySelector('.rc-popup textarea'));
  plugin.composer.close();assert.equal(app.keymap.scopes.length,0);
+});
+
+for(const initiallyOpen of [false,true])test(`saving a comment preserves sidebar state (${initiallyOpen?'open':'closed'})`,async t=>{
+ const {plugin,win,root,app}=await host(t);
+ if(initiallyOpen)await plugin.openSidebar();
+ const leaves=app.workspace.getLeavesOfType('reading-comments-sidebar');const reveals=app.workspace.revealCount;
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ const input=win.document.querySelector('.rc-popup textarea');input.value='Keep the panel as it is';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
+ for(let i=0;i<50 && plugin.composer;i++)await new Promise(resolve=>setTimeout(resolve,10));
+ assert.equal(plugin.composer,null);assert.equal((await plugin.store.load('Review sample.md')).file.comments.length,1);
+ assert.deepEqual(app.workspace.getLeavesOfType('reading-comments-sidebar'),leaves);assert.equal(app.workspace.revealCount,reveals);
+ assert.ok(root.querySelector('.rc-marker'));
+ if(initiallyOpen)assert.match(win.document.querySelector('.rc-sidebar').textContent,/Keep the panel as it is/);
 });

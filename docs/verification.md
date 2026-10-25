@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-`npm test` passes 28 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
+`npm test` passes 30 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
 
 Independent review identified two refresh defects. Regression tests reproduced both, then passed after the fixes: annotations survive identical-text DOM rebuilds, and stale failed loads cannot overwrite newer state.
 
@@ -36,3 +36,7 @@ Selecting a passage opens the composer directly. Regression tests cover saving w
 ## Anchored popup — v0.1.2
 
 The full-screen modal is replaced by a compact nonmodal popup beside the selected passage. Tests verify immediate textarea focus, viewport clamping and flipping, Escape and outside-click dismissal, duplicate prevention, saving, and cleanup. Native verification passed in Obsidian 1.14.5: highlighting a list passage opened the popup beside the quote, direct keyboard input entered the focused comment field without clicking, and Cmd+Enter saved the comment. Escape cancellation was also checked. The popup uses its own keyboard scope while open and restores it when closed.
+
+## Preserve panel state — v0.1.3
+
+Saving no longer opens or reveals the comments panel. Regression tests cover both closed and already-open panel states, saved markers, and refreshing an existing panel.

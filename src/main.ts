@@ -66,7 +66,7 @@ export default class ReadingComments extends Plugin {
   const modal=new CommentComposer(this.app,captured.quote,'',async text=>{
    if(view.file?.path!==source)throw new Error('The note changed or moved. Select the passage again.');
    await this.store.add(source,createComment(captured.quote,text,captured.line,captured.endLine,captured.anchor));
-   doc.getSelection()?.removeAllRanges();await this.openSidebar();await this.refresh();
+   doc.getSelection()?.removeAllRanges();await this.refresh();
   },()=>{doc.getSelection()?.removeAllRanges();this.composer=null;},{doc,anchor:()=>range.getBoundingClientRect()});
   this.composer=modal;modal.open();
  }

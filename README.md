@@ -26,7 +26,7 @@ For example, highlight “The next release ships soon,” comment “Replace ‘
 
 This plugin is installed manually; it is not listed in Obsidian’s community plugin directory. **You do not need Node.js or a build tool to install the release.**
 
-1. Download [reading-comments-0.1.2.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.2/reading-comments-0.1.2.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
+1. Download [reading-comments-0.1.3.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.3/reading-comments-0.1.3.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
 2. Extract it. The resulting `reading-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
 4. Copy the extracted `reading-comments` folder into `plugins`. The final layout should be:
@@ -50,7 +50,7 @@ Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been test
 2. Write your feedback, then choose **Save comment** or press **Cmd+Enter** / **Ctrl+Enter**.
 3. Use **Escape**, **Cancel**, or a click outside the popup to cancel a draft.
 
-The comments sidebar opens after saving. Open it again with the message icon in the ribbon or the **Reading Comments: Open reading comments** command.
+Saving leaves the comments panel as it is: closed stays closed, and an open panel updates in place. Open it when you want using a comment marker, the message icon in the ribbon, or the **Reading Comments: Open reading comments** command.
 
 <details>
 <summary>See the comment composer</summary>
