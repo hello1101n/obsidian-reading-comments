@@ -1,32 +1,24 @@
 # Reading Comments for Obsidian
 
-**Read a document. Leave comments. Let Claude or another LLM make the edits.**
+Leave comments while reading in Obsidian, then ask Claude or another LLM to edit the document using your feedback.
 
-Reading Comments lets you review a Markdown document in Obsidian’s **Reading view**, attach feedback to specific passages, and hand the whole review to Claude or another LLM. Comments stay separate from the document, so you can focus on reading before asking the AI to fix it.
+1. **Highlight text** in Reading view. A small popup opens; start typing your comment.
+2. **Save your comments** as you read. The sidebar stays closed until you open it.
+3. **Copy the review prompt** from the sidebar and give it to your AI agent, along with access to the note and comments file.
 
-[Download the latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
+Processed comments are marked **Resolved**, even if an attempt fails. Reopen them when you want another pass.
 
-## Use case: review first, let the AI edit afterward
+[Download](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Install](#install) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
 
-You have a draft, proposal, plan, or other document you want to improve. You want to read it comfortably and leave feedback where it belongs, then have an LLM turn that feedback into changes.
+![A compact popup beside the selected passage, with the draft comment field focused](docs/screenshots/inline-comment-popup-v013.jpg)
 
-1. **Read the document** in Obsidian Reading view.
-2. **Select passages and leave comments** such as “Explain this more clearly,” “Add a concrete example,” or “Replace this vague deadline with a date.”
-3. **Finish your review**, then click **Copy review prompt** in the comments sidebar.
-4. **Give the prompt to Claude or another LLM** with access to the document and its comments file. Ask it to apply the feedback.
-5. **Read the updated document** in Obsidian. Processed comments become **Resolved** when the AI saves their statuses. Reopen any comment that needs another attempt.
-
-For example, highlight “The next release ships soon,” comment “Replace ‘soon’ with 30 October,” and hand the review to your AI agent. The agent updates that sentence and marks the comment resolved.
-
-![Reading view with open and resolved passage highlights and the comments panel closed](docs/screenshots/reading-view-panel-closed-v013.jpg)
-
-**Desktop only.** Comments are created in Reading view. Live Preview, source mode, and mobile are outside this release.
+**Desktop only · Reading view · Obsidian 1.8.0+**
 
 ## Install
 
 This plugin is installed manually; it is not listed in Obsidian’s community plugin directory. **You do not need Node.js or a build tool to install the release.**
 
-1. Download [reading-comments-0.1.3.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.3/reading-comments-0.1.3.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
+1. Download the plugin ZIP from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
 2. Extract it. The resulting `reading-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
 4. Copy the extracted `reading-comments` folder into `plugins`. The final layout should be:
@@ -47,17 +39,12 @@ Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been test
 ## Add your first comment
 
 1. Highlight a passage in Reading view. A small popup opens beside the passage as soon as you finish selecting, with the comment field already focused. Start typing immediately.
-2. Write your feedback, then choose **Save comment** or press **Cmd+Enter** / **Ctrl+Enter**.
+2. Write your feedback, then choose **Save** or press **Cmd+Enter** / **Ctrl+Enter**.
 3. Use **Escape**, **Cancel**, or a click outside the popup to cancel a draft.
 
 Saving leaves the comments panel as it is: closed stays closed, and an open panel updates in place. Open it when you want using a comment marker, the message icon in the ribbon, or the **Reading Comments: Open reading comments** command.
 
-<details>
-<summary>See the comment popup</summary>
 
-![A compact popup beside the selected passage, with the draft comment field focused](docs/screenshots/inline-comment-popup-v013.jpg)
-
-</details>
 
 ## Open and Resolved
 
