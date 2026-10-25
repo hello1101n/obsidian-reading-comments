@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-`npm test` passes 19 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
+`npm test` passes 20 tests, and `npm run build` passes TypeScript checking and bundles the plugin. The plugin-host tests use jsdom, minimal Obsidian API substitutes, and a real temporary filesystem. They exercise selection → composer → saved JSON → Resolve → Reopen → copied prompt, external AI status edits, same-text DOM replacement, and stale refresh rejection.
 
 Independent review identified two refresh defects. Regression tests reproduced both, then passed after the fixes: annotations survive identical-text DOM rebuilds, and stale failed loads cannot overwrite newer state.
 
@@ -28,3 +28,7 @@ The final test state contained three resolved comments and one open comment. Scr
 The native checks above verify the core workflow, not every supported input. Theme changes, cross-paragraph selection, embedded notes, very long virtualized notes, multiple windows, and pathological concurrent writes were not exhaustively tested in the native app. DOM and storage tests cover formatted/cross-block selection, exclusion of embedded notes, external conflicts, malformed JSON, and refresh races.
 
 AI processing depends on the agent following the copied prompt. The plugin reads saved statuses; it does not run an AI model or independently judge whether the agent processed a comment.
+
+## Automatic composer — v0.1.1
+
+Selecting a passage opens the composer directly. Regression tests cover saving without a button click, duplicate mouse releases, and cancelling without reopening from an unrelated click. Native Obsidian verification passed: selecting a list passage opened the composer without another click, Cmd+Enter saved the comment, and Escape cancelled a second selection without reopening it.

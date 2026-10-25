@@ -3,7 +3,8 @@ export class CommentComposer extends Modal {
  private quote:string;
  private initial:string;
  private save:(text:string)=>Promise<void>;
- constructor(app:App,quote:string,initial:string,save:(text:string)=>Promise<void>){super(app);this.quote=quote;this.initial=initial;this.save=save;}
+ private closed:()=>void;
+ constructor(app:App,quote:string,initial:string,save:(text:string)=>Promise<void>,closed:()=>void=()=>{}){super(app);this.quote=quote;this.initial=initial;this.save=save;this.closed=closed;}
  onOpen():void {
   this.titleEl.setText(this.initial?'Edit comment':'Add comment');
   this.contentEl.createEl('blockquote',{text:this.quote});
@@ -23,5 +24,5 @@ export class CommentComposer extends Modal {
   input.onkeydown=e=>{if(e.key==='Enter' && (e.metaKey||e.ctrlKey) && !e.isComposing){e.preventDefault();void submit();}};
   input.focus();
  }
- onClose():void {this.contentEl.empty();}
+ onClose():void {this.contentEl.empty();this.closed();}
 }

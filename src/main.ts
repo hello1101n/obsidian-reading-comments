@@ -14,7 +14,7 @@ export default class ReadingComments extends Plugin {
  private selectedSource='';
  private painted=new Map<HTMLElement,Painted>();
  private attached=new Set<Document>();
- private buttons=new Map<Document,HTMLButtonElement>();
+ private composer:CommentComposer|null=null;
  private timer:number|undefined;
  private sequence=0;
  private stopped=false;
@@ -28,11 +28,11 @@ export default class ReadingComments extends Plugin {
   this.addRibbonIcon('message-square','Open reading comments',()=>{void this.openSidebar();});
   this.addCommand({id:'open-comments',name:'Open reading comments',callback:()=>{void this.openSidebar();}});
   this.addCommand({id:'copy-review-prompt',name:'Copy review prompt',callback:()=>this.run(()=>this.copyPrompt())});
-  this.addCommand({id:'add-comment',name:'Comment on selected passage',callback:()=>this.offerSelection(this.selected?.containerEl.ownerDocument ?? document,true)});
+  this.addCommand({id:'add-comment',name:'Comment on selected passage',callback:()=>this.offerSelection(this.selected?.containerEl.ownerDocument ?? document)});
   this.registerMarkdownPostProcessor((el,ctx)=>{const info=ctx.getSectionInfo(el);if(info)el.dataset.rcLine=String(info.lineStart+1);this.schedule();});
   this.registerEvent(this.app.workspace.on('active-leaf-change',leaf=>{
    if(leaf?.view instanceof MarkdownView && leaf.view.getMode()==='preview') this.selected=leaf.view;
-   this.hideButtons();this.schedule();
+   this.schedule();
   }));
   this.registerEvent(this.app.workspace.on('layout-change',()=>this.schedule()));
   this.registerEvent(this.app.vault.on('modify',()=>this.schedule()));
@@ -50,34 +50,25 @@ export default class ReadingComments extends Plugin {
  private root(view:MarkdownView):HTMLElement|null {return view.contentEl.querySelector<HTMLElement>('.markdown-preview-view');}
  private attach(doc:Document):void {
   if(this.attached.has(doc))return;this.attached.add(doc);
-  this.registerDomEvent(doc,'mouseup',()=>this.offerSelection(doc));
+  this.registerDomEvent(doc,'mouseup',event=>{
+   if(event.button===0 && event.target && this.views().some(view=>this.root(view)?.contains(event.target as Node)))this.offerSelection(doc);
+  });
   this.registerDomEvent(doc,'keyup',e=>{if(e.key==='Shift')this.offerSelection(doc);});
-  this.registerDomEvent(doc,'mousedown',e=>{if(!(e.target as Element)?.closest?.('.rc-add-comment'))this.hideButtons();});
-  this.registerDomEvent(doc,'keydown',e=>{if(e.key==='Escape')this.hideButtons();});
  }
- private hideButtons():void {for(const b of this.buttons.values())b.hidden=true;}
- private offerSelection(doc:Document,direct=false):void {
-  const selection=doc.getSelection();if(!selection?.rangeCount || selection.isCollapsed){this.hideButtons();return;}
+ private offerSelection(doc:Document):void {
+  if(this.composer || this.stopped)return;
+  const selection=doc.getSelection();if(!selection?.rangeCount || selection.isCollapsed)return;
   const range=selection.getRangeAt(0);
   const view=this.views().find(v=>{const root=this.root(v);return root?.contains(range.startContainer) && root.contains(range.endContainer);});
   if(!view?.file)return;
   const root=this.root(view)!;const captured=captureSelection(root,range);if(!captured)return;
   this.selected=view;const source=view.file.path;
-  const compose=()=>{
-   this.hideButtons();
-   const modal=new CommentComposer(this.app,captured.quote,'',async text=>{
-    if(view.file?.path!==source)throw new Error('The note changed or moved. Select the passage again.');
-    await this.store.add(source,createComment(captured.quote,text,captured.line,captured.endLine,captured.anchor));
-    doc.getSelection()?.removeAllRanges();await this.openSidebar();await this.refresh();
-   });modal.open();this.register(()=>modal.close());
-  };
-  if(direct){compose();return;}
-  let button=this.buttons.get(doc);
-  if(!button){button=doc.createElement('button');button.className='rc-ui rc-add-comment mod-cta';button.textContent='Add comment';button.onmousedown=e=>e.preventDefault();doc.body.append(button);this.buttons.set(doc,button);}
-  const rect=range.getBoundingClientRect();
-  button.style.left=`${Math.max(8,Math.min(rect.left,(doc.defaultView?.innerWidth??800)-150))}px`;
-  button.style.top=`${Math.max(8,Math.min(rect.bottom+8,(doc.defaultView?.innerHeight??600)-48))}px`;
-  button.onclick=compose;button.hidden=false;
+  const modal=new CommentComposer(this.app,captured.quote,'',async text=>{
+   if(view.file?.path!==source)throw new Error('The note changed or moved. Select the passage again.');
+   await this.store.add(source,createComment(captured.quote,text,captured.line,captured.endLine,captured.anchor));
+   doc.getSelection()?.removeAllRanges();await this.openSidebar();await this.refresh();
+  },()=>{doc.getSelection()?.removeAllRanges();this.composer=null;});
+  this.composer=modal;modal.open();
  }
  private async refresh():Promise<void> {
   if(this.stopped)return;const seq=++this.sequence;
@@ -137,7 +128,8 @@ export default class ReadingComments extends Plugin {
  private async toggle(id:string):Promise<void>{const {comment,source,snapshot}=this.current(id);await this.store.update(source,snapshot.raw,f=>setResolved(f,id,!comment.resolved));await this.refresh();}
  private async remove(id:string):Promise<void>{const {source,snapshot}=this.current(id);await this.store.update(source,snapshot.raw,f=>({...f,comments:f.comments.filter(c=>c.id!==id)}));await this.refresh();}
  private edit(id:string):void {
-  this.run(async()=>{const {comment,source,snapshot}=this.current(id);const modal=new CommentComposer(this.app,comment.highlightedText,comment.comment,async text=>{await this.store.update(source,snapshot.raw,f=>changeComment(f,id,c=>({...c,comment:text})));await this.refresh();});modal.open();this.register(()=>modal.close());});
+  if(this.composer)return;
+  this.run(async()=>{const {comment,source,snapshot}=this.current(id);const modal=new CommentComposer(this.app,comment.highlightedText,comment.comment,async text=>{await this.store.update(source,snapshot.raw,f=>changeComment(f,id,c=>({...c,comment:text})));await this.refresh();},()=>{this.composer=null;});this.composer=modal;modal.open();});
  }
  private jump(id:string):void {
   const root=this.selected?this.root(this.selected):null;const range=root?this.painted.get(root)?.ranges.get(id):null;
@@ -152,9 +144,9 @@ export default class ReadingComments extends Plugin {
  }
  onunload():void {
   this.stopped=true;this.sequence++;if(this.timer!==undefined)window.clearTimeout(this.timer);
-  for(const b of this.buttons.values())b.remove();
+  this.composer?.close();this.composer=null;
   for(const [root]of this.painted)root.querySelectorAll('.rc-marker').forEach(el=>el.remove());
   for(const doc of this.attached){const win=doc.defaultView as HighlightWindow|null;win?.CSS?.highlights?.delete('rc-open');win?.CSS?.highlights?.delete('rc-resolved');doc.querySelectorAll('[data-rc-line]').forEach(el=>el.removeAttribute('data-rc-line'));}
-  this.buttons.clear();this.painted.clear();this.attached.clear();
+  this.painted.clear();this.attached.clear();
  }
 }

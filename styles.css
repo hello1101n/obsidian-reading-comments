@@ -1,7 +1,5 @@
 ::highlight(rc-open) { background-color: rgba(255, 194, 61, .3); }
 ::highlight(rc-resolved) { background-color: rgba(87, 168, 112, .15); }
-.rc-add-comment { position: fixed; z-index: 1000; box-shadow: var(--shadow-s); }
-.rc-add-comment[hidden] { display: none; }
 .rc-marker { display: inline-flex; margin-inline-start: .35em; padding: 0 .3em; height: 1.5em; font-size: .8em; vertical-align: middle; }
 .rc-marker.is-resolved { color: var(--text-muted); opacity: .65; }
 .rc-sidebar { padding: 16px; }

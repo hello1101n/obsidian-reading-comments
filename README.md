@@ -26,7 +26,7 @@ For example, highlight “The next release ships soon,” comment “Replace ‘
 
 This plugin is installed manually; it is not listed in Obsidian’s community plugin directory. **You do not need Node.js or a build tool to install the release.**
 
-1. Download [reading-comments-0.1.0.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.0/reading-comments-0.1.0.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
+1. Download [reading-comments-0.1.1.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.1/reading-comments-0.1.1.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
 2. Extract it. The resulting `reading-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
 4. Copy the extracted `reading-comments` folder into `plugins`. The final layout should be:
@@ -40,16 +40,15 @@ This plugin is installed manually; it is not listed in Obsidian’s community pl
 
 5. Return to **Settings → Community plugins**, click **Reload plugins**, and enable **Reading Comments**. Restart Obsidian if it does not appear.
 6. Open a Markdown document and switch to **Reading view** using the view toggle in the note header.
-7. Select some text and click **Add comment**. You’re ready to review.
+7. Highlight some text. The comment composer opens automatically; you’re ready to review.
 
 Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been tested in Obsidian **1.14.5 on macOS**.
 
 ## Add your first comment
 
-1. Select a passage in Reading view.
-2. Click **Add comment**.
-3. Write your feedback, then choose **Save comment** or press **Cmd+Enter** / **Ctrl+Enter**.
-4. Use **Escape** to cancel a draft.
+1. Highlight a passage in Reading view. The comment composer opens as soon as you finish selecting.
+2. Write your feedback, then choose **Save comment** or press **Cmd+Enter** / **Ctrl+Enter**.
+3. Use **Escape** to cancel a draft.
 
 The comments sidebar opens after saving. Open it again with the message icon in the ribbon or the **Reading Comments: Open reading comments** command.
 

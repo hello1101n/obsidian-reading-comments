@@ -43,7 +43,8 @@ test('Reading view selection opens composer, persists comment, resolves, reopens
  const {plugin,win,root,rootDir,clipboard}=await host(t);
  const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);
  root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
- const button=win.document.querySelector('.rc-add-comment');assert.equal(button.hidden,false);button.click();
+ assert.ok(win.document.querySelector('textarea'), 'Highlighting opens the composer without a button click');
+ assert.equal(win.document.querySelector('.rc-add-comment'),null);
  const input=win.document.querySelector('textarea');input.value='Use a date';input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
  let saved;for(let i=0;i<50;i++){try{saved=JSON.parse(await readFile(join(rootDir,'.comments/Review sample.md.comments.json'),'utf8'));break;}catch{await new Promise(r=>setTimeout(r,10));}}
  assert.equal(saved.comments[0].comment,'Use a date');assert.equal(saved.comments[0].resolved,false);
@@ -78,4 +79,18 @@ test('AI status changes in JSON appear on refresh and survive a new store load',
  const path=join(rootDir,'.comments/Review sample.md.comments.json');const f=JSON.parse(await readFile(path,'utf8'));f.comments[0].resolved=true;await writeFile(path,JSON.stringify(f));await plugin.refresh();
  assert.equal(win.document.querySelector('.rc-status').textContent,'Resolved');
  assert.equal((await plugin.store.load('Review sample.md')).file.comments[0].resolved,true);
+});
+
+test('a selection opens one composer and unrelated mouse releases do not reopen it',async t=>{
+ const {plugin,win,root}=await host(t);
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);
+ win.document.body.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ assert.equal(win.document.querySelectorAll('.modal').length,0);
+ root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ assert.equal(win.document.querySelectorAll('.modal').length,1);
+ [...win.document.querySelectorAll('.modal button')].find(b=>b.textContent==='Cancel').click();
+ assert.equal(win.document.querySelectorAll('.modal').length,0);
+ win.document.body.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ assert.equal(win.document.querySelectorAll('.modal').length,0);
 });
