@@ -21,7 +21,7 @@ export class CommentsSidebar extends ItemView {
   for(const comment of model.comments){
    const card=el.createDiv({cls:'rc-card',attr:{'data-comment-id':comment.id}});
    card.classList.toggle('is-resolved',comment.resolved===true);
-   card.createEl('span',{text:comment.resolved?'Resolved':'Open',cls:'rc-status'});
+   card.createSpan({text:comment.resolved?'Resolved':'Open',cls:'rc-status'});
    const match=model.matches.get(comment.id);
    if(match && match!=='found') card.createEl('p',{text:match==='ambiguous'?'Passage appears more than once. Review its location.':'Passage no longer found in the displayed note.',cls:'rc-warning'});
    card.createEl('blockquote',{text:comment.highlightedText});

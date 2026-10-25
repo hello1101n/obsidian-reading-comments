@@ -29,7 +29,7 @@ export class CommentComposer {
   const input=popup.createEl('textarea',{cls:'rc-composer',attr:{placeholder:'What should change?','aria-label':'Comment',rows:'3'}});
   input.value=this.initial;
   const actions=popup.createDiv({cls:'rc-actions'});
-  actions.createEl('span',{text:'⌘/Ctrl+Enter to save',cls:'rc-popup-hint'});
+  actions.createSpan({text:'⌘/Ctrl+Enter to save',cls:'rc-popup-hint'});
   const cancel=actions.createEl('button',{text:'Cancel'});cancel.onclick=()=>{if(!this.saving)this.close();};
   const save=actions.createEl('button',{text:'Save',cls:'mod-cta'});
   const submit=async()=>{

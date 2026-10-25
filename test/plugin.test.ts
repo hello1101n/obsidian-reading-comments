@@ -13,7 +13,7 @@ async function host(t){
  const win=dom.window;
  const proto=win.HTMLElement.prototype;
  proto.createEl=function(tag,opts={}){const el=win.document.createElement(tag);if(typeof opts==='string')opts={cls:opts};if(opts.text)el.textContent=opts.text;if(opts.cls)el.className=opts.cls;for(const [k,v]of Object.entries(opts.attr??{}))el.setAttribute(k,v);this.append(el);return el;};
- proto.createDiv=function(opts={}){return this.createEl('div',opts);};proto.empty=function(){this.replaceChildren();};proto.setText=function(t){this.textContent=t;};proto.addClass=function(c){this.classList.add(c);};proto.removeClass=function(c){this.classList.remove(c);};proto.scrollIntoView=function(){};
+ proto.createSpan=function(opts={}){return this.createEl('span',opts);};proto.createDiv=function(opts={}){return this.createEl('div',opts);};proto.empty=function(){this.replaceChildren();};proto.setText=function(t){this.textContent=t;};proto.addClass=function(c){this.classList.add(c);};proto.removeClass=function(c){this.classList.remove(c);};proto.scrollIntoView=function(){};
  win.Range.prototype.getBoundingClientRect=()=>({left:50,right:260,top:80,bottom:100,width:210,height:20});
  const rootDir=await mkdtemp(join(tmpdir(),'rc-plugin-'));
  class Adapter {

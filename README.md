@@ -8,7 +8,7 @@ Leave comments while reading in Obsidian, then ask Claude or another LLM to edit
 
 Processed comments are marked **Resolved**, even if an attempt fails. Reopen them when you want another pass.
 
-[Obsidian plugin listing](https://community.obsidian.md/plugins/note-review-comments) · [Download ZIP](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Install](#install) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
+[Obsidian plugin listing](https://community.obsidian.md/plugins/note-review-comments) · [Release files](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Install](#install) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
 
 ![How to add a comment and open the comment list using the speech-bubble icon in the left ribbon](docs/screenshots/add-comment-and-open-panel.gif)
 
@@ -16,10 +16,10 @@ Processed comments are marked **Resolved**, even if an attempt fails. Reopen the
 
 ## Install
 
-Find Note Review Comments in the [Obsidian Community directory](https://community.obsidian.md/plugins/note-review-comments). Its listing is currently awaiting review; until **Add to Obsidian** is available, install it manually using the steps below. **You do not need Node.js or a build tool.**
+Find Note Review Comments in the [Obsidian Community directory](https://community.obsidian.md/plugins/note-review-comments). Choose **Add to Obsidian**, then install and enable the plugin. For manual installation, use the steps below. **You do not need Node.js or a build tool.**
 
-1. Download the plugin ZIP from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
-2. Extract it. The resulting `note-review-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest).
+2. Create a folder named `note-review-comments` and place the three downloaded files inside.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
 4. Copy the extracted `note-review-comments` folder into `plugins`. The final layout should be:
 
