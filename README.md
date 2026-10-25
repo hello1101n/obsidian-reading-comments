@@ -10,7 +10,7 @@ Processed comments are marked **Resolved**, even if an attempt fails. Reopen the
 
 [Download](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Install](#install) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
 
-![How to add a comment: highlight text, type in the automatic popup, and click Save](docs/screenshots/add-comment-walkthrough.gif)
+![How to add a comment: highlight text, type in the automatic popup, and click Save](docs/screenshots/add-comment-full-window.gif)
 
 **Desktop only · Reading view · Obsidian 1.8.0+**
 
