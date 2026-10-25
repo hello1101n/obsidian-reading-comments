@@ -18,7 +18,7 @@ You have a draft, proposal, plan, or other document you want to improve. You wan
 
 For example, highlight “The next release ships soon,” comment “Replace ‘soon’ with 30 October,” and hand the review to your AI agent. The agent updates that sentence and marks the comment resolved.
 
-![A note in Obsidian Reading view with highlighted passages, comment markers, and Open and Resolved review cards](docs/screenshots/reading-view.jpg)
+![Reading view with open and resolved passage highlights and the comments panel closed](docs/screenshots/reading-view.jpg)
 
 **Desktop only.** Comments are created in Reading view. Live Preview, source mode, and mobile are outside this release.
 
@@ -53,9 +53,9 @@ Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been test
 Saving leaves the comments panel as it is: closed stays closed, and an open panel updates in place. Open it when you want using a comment marker, the message icon in the ribbon, or the **Reading Comments: Open reading comments** command.
 
 <details>
-<summary>See the comment composer</summary>
+<summary>See the comment popup</summary>
 
-![The Add comment composer showing the selected passage and a draft review comment](docs/screenshots/add-comment.jpg)
+![A compact popup beside the selected passage, with the draft comment field focused](docs/screenshots/add-comment.jpg)
 
 </details>
 
