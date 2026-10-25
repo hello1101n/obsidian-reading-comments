@@ -122,3 +122,7 @@ The test suite covers DOM selections, status persistence, storage conflicts, mal
 ## Uninstall
 
 Disable **Reading Comments** and remove `<your-vault>/.obsidian/plugins/reading-comments`. Your notes remain ordinary Markdown. Keep `.comments` to retain your review history.
+
+## License
+
+[MIT](LICENSE).

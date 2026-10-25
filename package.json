@@ -27,5 +27,6 @@
   "homepage": "https://github.com/hello1101n/obsidian-reading-comments#readme",
   "bugs": {
     "url": "https://github.com/hello1101n/obsidian-reading-comments/issues"
-  }
+  },
+  "license": "MIT"
 }
