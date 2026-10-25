@@ -1,35 +1,48 @@
 # Reading Comments for Obsidian
 
-**Review the note you’re reading. Keep the feedback out of your Markdown.**
+**Read a document. Leave comments. Let Claude or another LLM make the edits.**
 
-Reading Comments adds passage comments to Obsidian’s **Reading view**. Select text, write feedback, and revisit it through highlights, comment markers, and a sidebar. When you’re ready, copy a review prompt for an AI agent with access to your local files.
+Reading Comments lets you review a Markdown document in Obsidian’s **Reading view**, attach feedback to specific passages, and hand the whole review to Claude or another LLM. Comments stay separate from the document, so you can focus on reading before asking the AI to fix it.
 
 [Download the latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest) · [Report an issue](https://github.com/hello1101n/obsidian-reading-comments/issues) · [VS Code companion](https://github.com/hello1101n/comment-tool)
 
+## Use case: review first, let the AI edit afterward
+
+You have a draft, proposal, plan, or other document you want to improve. You want to read it comfortably and leave feedback where it belongs, then have an LLM turn that feedback into changes.
+
+1. **Read the document** in Obsidian Reading view.
+2. **Select passages and leave comments** such as “Explain this more clearly,” “Add a concrete example,” or “Replace this vague deadline with a date.”
+3. **Finish your review**, then click **Copy review prompt** in the comments sidebar.
+4. **Give the prompt to Claude or another LLM** with access to the document and its comments file. Ask it to apply the feedback.
+5. **Read the updated document** in Obsidian. Processed comments become **Resolved** when the AI saves their statuses. Reopen any comment that needs another attempt.
+
+For example, highlight “The next release ships soon,” comment “Replace ‘soon’ with 30 October,” and hand the review to your AI agent. The agent updates that sentence and marks the comment resolved.
+
 ![A note in Obsidian Reading view with highlighted passages, comment markers, and Open and Resolved review cards](docs/screenshots/reading-view.jpg)
-
-## What you can do
-
-1. Comment on paragraphs, formatted text, lists, and table cells while reading.
-2. Jump between highlighted passages and their sidebar cards.
-3. Edit, delete, resolve, or reopen comments.
-4. Keep reviews across restarts and note renames.
-5. Hand open comments to an AI through a copied prompt.
-6. Share the same review files with the VS Code [Comment Tool](https://github.com/hello1101n/comment-tool).
 
 **Desktop only.** Comments are created in Reading view. Live Preview, source mode, and mobile are outside this release.
 
 ## Install
 
-This plugin is installed manually; it is not listed in Obsidian’s community plugin directory.
+This plugin is installed manually; it is not listed in Obsidian’s community plugin directory. **You do not need Node.js or a build tool to install the release.**
 
-1. Download `reading-comments-0.1.0.zip` from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest).
-2. Extract it. You should get a folder named `reading-comments` containing `main.js`, `manifest.json`, and `styles.css`.
-3. Copy that folder into `<your-vault>/.obsidian/plugins/`.
-4. In Obsidian, open **Settings → Community plugins**, reload the installed plugin list, and enable **Reading Comments**.
-5. Open a Markdown note and switch to **Reading view**.
+1. Download [reading-comments-0.1.0.zip](https://github.com/hello1101n/obsidian-reading-comments/releases/download/v0.1.0/reading-comments-0.1.0.zip) from the [release page](https://github.com/hello1101n/obsidian-reading-comments/releases/latest). Choose the plugin ZIP, not GitHub’s “Source code” archives.
+2. Extract it. The resulting `reading-comments` folder should contain `main.js`, `manifest.json`, and `styles.css`.
+3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
+4. Copy the extracted `reading-comments` folder into `plugins`. The final layout should be:
 
-If the plugin does not appear, restart Obsidian. Obsidian **1.8.0 or newer** is required; the core workflow has been tested in Obsidian **1.14.5 on macOS**.
+   ```text
+   <your-vault>/.obsidian/plugins/reading-comments/
+   ├── main.js
+   ├── manifest.json
+   └── styles.css
+   ```
+
+5. Return to **Settings → Community plugins**, click **Reload plugins**, and enable **Reading Comments**. Restart Obsidian if it does not appear.
+6. Open a Markdown document and switch to **Reading view** using the view toggle in the note header.
+7. Select some text and click **Add comment**. You’re ready to review.
+
+Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been tested in Obsidian **1.14.5 on macOS**.
 
 ## Add your first comment
 
@@ -58,11 +71,13 @@ The comments sidebar opens after saving. Open it again with the message icon in 
 
 The sidebar provides **Show passage**, **Resolve/Reopen**, **Edit**, and **Delete**. Commenting and changing statuses do not modify the note’s Markdown.
 
-## Hand the review to an AI
+## Send your comments to Claude or another LLM
 
 1. Choose **Copy review prompt** in the sidebar.
-2. Paste it into an AI coding agent that can read and edit files in your vault.
+2. Paste it into Claude Code or another AI agent that can read and edit files in your vault.
 3. Let the agent process the review. Obsidian picks up saved note and status changes automatically.
+
+If you use a chat-based LLM without local file access, also attach or paste the Markdown document and its `.comments` JSON file. Local paths alone will not give the model access. Save its revised Markdown and updated comments JSON back to the same files to see the edits and statuses in Obsidian.
 
 The copied prompt includes absolute paths to the note and its comments file. It instructs the agent to:
 
