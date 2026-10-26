@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - name: Checkout tagged source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Check release version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+          const manifest = read('manifest.json');
+          if (process.env.RELEASE_TAG !== manifest.version ||
+              read('package.json').version !== manifest.version ||
+              read('package-lock.json').version !== manifest.version ||
+              read('versions.json')[manifest.version] !== manifest.minAppVersion) {
+            throw new Error('Tag and plugin version metadata must agree');
+          }
+          JS
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Attest release assets
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: |
+            dist/note-review-comments/main.js
+            dist/note-review-comments/manifest.json
+            dist/note-review-comments/styles.css
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            dist/note-review-comments/main.js \
+            dist/note-review-comments/manifest.json \
+            dist/note-review-comments/styles.css \
+            --verify-tag --title "$RELEASE_TAG" --generate-notes
