@@ -1,6 +1,6 @@
 {
   "name": "note-review-comments",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "description": "Passage review comments for Obsidian Reading view",
   "scripts": {

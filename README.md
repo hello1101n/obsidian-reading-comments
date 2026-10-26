@@ -16,12 +16,21 @@ Processed comments are marked **Resolved**, even if an attempt fails. Reopen the
 
 ## Install
 
-Find Note Review Comments in the [Obsidian Community directory](https://community.obsidian.md/plugins/note-review-comments). Choose **Add to Obsidian**, then install and enable the plugin. For manual installation, use the steps below. **You do not need Node.js or a build tool.**
+1. Open **Settings → Community plugins** in Obsidian. If prompted, select **Turn on community plugins**.
+2. Select **Browse** and search for **Note Review Comments**.
+3. Select **Install**, then **Enable**.
+4. Open a Markdown document and switch to **Reading view** to [add your first comment](#add-your-first-comment).
+
+You can also open the [Obsidian Community listing](https://community.obsidian.md/plugins/note-review-comments) and choose **Add to Obsidian**. **You do not need Node.js or a build tool.**
+
+### Manual installation
+
+Use these steps if you prefer to install the release files yourself:
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/hello1101n/obsidian-reading-comments/releases/latest).
 2. Create a folder named `note-review-comments` and place the three downloaded files inside.
 3. Open your Obsidian vault’s `.obsidian/plugins/` directory. You can use the **Open plugins folder** folder icon in **Settings → Community plugins**. If navigating manually, show hidden folders to find `.obsidian`, and create `plugins` if it is missing.
-4. Copy the extracted `note-review-comments` folder into `plugins`. The final layout should be:
+4. Copy the `note-review-comments` folder into `plugins`. The final layout should be:
 
    ```text
    <your-vault>/.obsidian/plugins/note-review-comments/
@@ -30,15 +39,16 @@ Find Note Review Comments in the [Obsidian Community directory](https://communit
    └── styles.css
    ```
 
-5. Return to **Settings → Community plugins**, click **Reload plugins**, and enable **Note Review Comments**. Restart Obsidian if it does not appear.
-6. Open a Markdown document and switch to **Reading view** using the view toggle in the note header.
-7. Highlight some text. A small comment popup opens beside the passage with its text field focused; start typing.
+5. Restart Obsidian, then open **Settings → Community plugins** and enable **Note Review Comments**.
+6. Open a Markdown document and switch to **Reading view** to [add your first comment](#add-your-first-comment).
 
 Requires Obsidian **1.8.0 or newer** on desktop. The core workflow has been tested in Obsidian **1.14.5 on macOS**.
 
 If upgrading from a manual installation of Reading Comments 0.1.3 or earlier, disable and remove its `reading-comments` plugin folder before installing this version. Keep the vault’s `.comments` folder: existing reviews remain compatible.
 
 ## Add your first comment
+
+Open a Markdown document and switch to **Reading view** using the view toggle in the note header.
 
 1. Highlight a passage in Reading view. A small popup opens beside the passage as soon as you finish selecting, with the comment field already focused. Start typing immediately.
 2. Write your feedback, then choose **Save** or press **Cmd+Enter** / **Ctrl+Enter**.
