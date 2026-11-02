@@ -154,3 +154,23 @@ for(const initiallyOpen of [false,true])test(`saving a comment preserves sidebar
  assert.ok(root.querySelector('.rc-marker'));
  if(initiallyOpen)assert.match(win.document.querySelector('.rc-sidebar').textContent,/Keep the panel as it is/);
 });
+
+ test('saving with a deferred sidebar closes the popup and renders after the sidebar loads',async t=>{
+ const {plugin,win,root,app,notices}=await host(t);
+ await plugin.openSidebar();
+ const leaf=app.workspace.getLeavesOfType('note-review-comments-sidebar')[0];
+ const loaded=leaf.view;
+ leaf.view={getViewType:()=> 'note-review-comments-sidebar'};
+ const reveals=app.workspace.revealCount;
+ const range=win.document.createRange();range.selectNodeContents(root.querySelector('p'));win.getSelection().addRange(range);
+ root.dispatchEvent(new win.MouseEvent('mouseup',{bubbles:true}));
+ const input=win.document.querySelector('.rc-popup textarea');input.value='Deferred panel comment';
+ input.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Enter',metaKey:true,bubbles:true}));
+ for(let i=0;i<50 && plugin.composer;i++)await new Promise(resolve=>setTimeout(resolve,10));
+ assert.deepEqual(notices,[]);
+ assert.equal(win.document.querySelector('.rc-popup'),null);
+ assert.equal((await plugin.store.load('Review sample.md')).file.comments.length,1);
+ assert.equal(app.workspace.revealCount,reveals);
+ leaf.view=loaded;await plugin.refresh();
+ assert.match(loaded.contentEl.textContent,/Deferred panel comment/);
+ });

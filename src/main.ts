@@ -106,7 +106,15 @@ export default class ReadingComments extends Plugin {
   this.updateHighlights();
   if(!this.selected){this.snapshot=null;this.selectedSource='';}
   const signature=JSON.stringify([sidebar.source,sidebar.comments,[...sidebar.matches],sidebar.error]);
-  if(signature!==this.sidebarSignature){this.sidebarSignature=signature;for(const leaf of this.app.workspace.getLeavesOfType(SIDEBAR))(leaf.view as CommentsSidebar).render(sidebar);}
+  if(signature!==this.sidebarSignature){
+   let pending=false;
+   for(const leaf of this.app.workspace.getLeavesOfType(SIDEBAR)){
+    if(leaf.view instanceof CommentsSidebar)leaf.view.render(sidebar);
+    else pending=true;
+   }
+   // Background leaves can hold DeferredView until Obsidian loads the sidebar.
+   this.sidebarSignature=pending?'':signature;
+  }
  }
  private updateHighlights():void {
   for(const doc of this.attached){
